@@ -15,10 +15,9 @@ int main(char* argv, int argc)
         fprintf (stderr, "An error occurred while initializing ENet.\n");
         return EXIT_FAILURE;
     }
-    // address.host = ENET_HOST_ANY;
-    enet_address_set_host(&address, "127.0.0.1");
-    // address.port = 0xAF13;
-    address.port = 1234;
+    address.host = ENET_HOST_ANY;
+    // enet_address_set_host(&address, "127.0.0.1");
+    address.port = 0xAF13;
     server = enet_host_create(&address, 32, 2, 0, 0);
     if (server == NULL)
     {

@@ -6,6 +6,21 @@
 ENetAddress address;
 ENetHost* server = NULL;
 
+typedef struct URL {
+    const char* uri;
+};
+
+void Test(ecs_iter_t *it) {
+    // Get fields from system query
+    URL *url = ecs_field(it, URL, 1);
+    // Iterate matched entities
+    for (int i = 0; i < it->count; i++)
+    {
+        printf("URL is %s\n", url[i].uri);
+    }
+}
+
+
 int main(char* argv, int argc)
 {
     printf("GraphLife - A graph shield companion to protect life.\n");
@@ -29,6 +44,11 @@ int main(char* argv, int argc)
     enet_address_get_host_ip(&address, address_name, 100);
     printf("Hosting GraphLife server on %s...\n", address_name);
     ecs_world_t* sim = ecs_init();
+    ECS_COMPONENT(sim, WikipediaPage);
+    ECS_COMPONENT(sim, URL);
+    ECS_TAG(sim, Hyperlink);
+    ecs_plecs_from_file(sim, "../data/Love.flecs");
+    ECS_SYSTEM(sim, Test, EcsOnUpdate, URL);
     printf("Awaiting player intentions\n");
     while (!ecs_should_quit(sim))
     {
@@ -51,6 +71,7 @@ int main(char* argv, int argc)
                         event.packet -> data,
                         event.peer -> data,
                         event.channelID);
+                // TODO: Convert the packet into a Flecs component
                 /* Clean up the packet now that we're done using it. */
                 enet_packet_destroy (event.packet);
                 
